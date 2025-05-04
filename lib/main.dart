@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_example/provider/counter_provider.dart';
 import 'package:provider_example/provider/theme_provider.dart';
+import 'package:provider_example/provider/user_provider.dart';
 
 void main() {
   runApp(
@@ -11,7 +12,9 @@ void main() {
         ChangeNotifierProvider(create: (context) => CounterProvider(),
         ),
         ChangeNotifierProvider(create: (context) => ThemeProvider(),
-        )
+        ),
+        ChangeNotifierProvider(create: (context) => UserProvider(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -46,6 +49,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final userName = context.select((UserProvider user) => user.name);
+    final userAge = context.select((UserProvider user) => user.age);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -71,6 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     onChanged: (_) => theme.toggleTheme(),//함수 리턴이 아닌 호출을 해야 적용됨()
                   ),
             ),
+            SizedBox(height: 20,),
+            Text('${userName ?? ''}'),
+            Text('${userAge ?? ''}'),
+            ElevatedButton(onPressed: () => context.read<UserProvider>().updateName('sunfishes'), child: Text('update name')),
+            ElevatedButton(onPressed: () => context.read<UserProvider>().updateAge(22), child: Text('update age')),
           ],
         ),
       ),
